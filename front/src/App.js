@@ -15,6 +15,16 @@ function fazerRequisicaoComBody(url, metodo, conteudo, token) {
 	}).then((resposta) => resposta.json());
 }
 
+function fazerRequisicaoDelete(url, metodo, token) {
+	return fetch(url, {
+		method: metodo,
+		headers: {
+			"Content-Type": "application/json",
+			Authorization: token && `Bearer ${token}`,
+		},
+	}).then((resposta) => resposta.json());
+}
+
 function App() {
 	const [rodada, setRodada] = React.useState(1);
 	const [jogosRodada, setJogosRodada] = React.useState([]);
@@ -25,9 +35,12 @@ function App() {
 	const [ordem, setOrdem] = React.useState("crescente");
 	const [tabelaClassificacao, setTabelaClassificacao] = React.useState([]);
 	const [editar, setEditar] = React.useState(false);
+	const [adicionar, setAdicionar] = React.useState(false);
 	const [idJogo, setIdJogo] = React.useState(0);
 	const [inputGolsCasa, setInputGolsCasa] = React.useState(0);
 	const [inputGolsVis, setInputGolsVis] = React.useState(0);
+	const [inputTimeCasa, setInputTimeCasa] = React.useState("");
+	const [inputTimeVis, setInputTimeVis] = React.useState("");
 
 	const atualizarDados = () => {
 		fazerRequisicaoGET(`http://localhost:8081/classificacao`).then(
@@ -295,18 +308,100 @@ function App() {
 																				gols_visitante: inputGolsVis,
 																			},
 																			token
-																		).then(({ dados }) => {
-																			console.log(dados);
-																			console.log({
-																				idJogo,
-																				inputGolsCasa,
-																				inputGolsVis,
-																			});
+																		).then((resposta) => {
 																			atualizarDados();
 																			atualizarRodadas();
 																		});
 																		setJogosRodada(jogosRodada);
 																		setEditar(false);
+																	}}
+																/>
+															</td>
+															<td>
+																<img
+																	src="https://systemuicons.com/images/icons/cross.svg"
+																	onClick={async () => {
+																		fazerRequisicaoComBody(
+																			`http://localhost:8081/jogos/${idJogo}`,
+																			"DELETE",
+																			{},
+																			token
+																		).then(({ dados }) => {
+																			atualizarDados();
+																			atualizarRodadas();
+																		});
+																		setJogosRodada(jogosRodada);
+																		setEditar(false);
+																	}}
+																/>
+															</td>
+														</tr>
+													);
+												} else if (adicionar && jogo.id === idJogo) {
+													return (
+														<tr>
+															<td>
+																<img src="https://logospng.org/download/brasileirao-serie-a/logo-brasileirao-2048.png" />
+															</td>
+															<td>
+																<input
+																	value={inputTimeCasa}
+																	onInput={(event) => {
+																		setInputTimeCasa(event.target.value);
+																	}}
+																/>
+															</td>
+															<td className="placar">
+																<input
+																	value={inputGolsCasa}
+																	onInput={(event) => {
+																		setInputGolsCasa(
+																			Number(event.target.value)
+																		);
+																	}}
+																/>
+															</td>
+															<td>x</td>
+															<td className="placar">
+																<input
+																	value={inputGolsVis}
+																	onInput={(event) => {
+																		setInputGolsVis(Number(event.target.value));
+																	}}
+																/>
+															</td>
+															<td>
+																<input
+																	value={inputTimeVis}
+																	onInput={(event) => {
+																		setInputTimeVis(event.target.value);
+																	}}
+																/>
+															</td>
+															<td>
+																<img src="https://logospng.org/download/brasileirao-serie-a/logo-brasileirao-2048.png" />
+															</td>
+															<td>
+																<img
+																	src="https://systemuicons.com/images/icons/check.svg"
+																	onClick={async () => {
+																		fazerRequisicaoComBody(
+																			`http://localhost:8081/jogos`,
+																			"POST",
+																			{
+																				time_casa: inputTimeCasa,
+																				gols_casa: inputGolsCasa,
+																				gols_visitante: inputGolsVis,
+																				time_visitante: inputTimeVis,
+																				rodada: rodada,
+																			},
+																			token
+																		).then((resposta) => {
+																			atualizarDados();
+																			atualizarRodadas();
+																		});
+																		setJogosRodada(jogosRodada);
+																		setAdicionar(false);
 																	}}
 																/>
 															</td>
@@ -334,6 +429,15 @@ function App() {
 																		setInputGolsCasa(jogo.gols_casa);
 																		setInputGolsVis(jogo.gols_visitante);
 																		setEditar(true);
+																	}}
+																/>
+															</td>
+															<td>
+																<img
+																	src="https://systemuicons.com/images/icons/plus.svg"
+																	onClick={() => {
+																		setIdJogo(jogo.id);
+																		setAdicionar(true);
 																	}}
 																/>
 															</td>

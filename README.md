@@ -1,2 +1,0 @@
-# Desafio3TabelaDoBrasileirao
-O projeto consiste em um site no qual é possível ter acesso a Tabela do Brasileirão. No primeiro card você pode visualizar os resultados dos jogos em diferentes rodadas e no segundo está realmente a tabela de classificação, que você pode escolher ordenar de forma crescente ou decrescente por posição, nome do time,  pontos, empates, vitórias, derrotas, gols feitos, gols sofridos ou saldo de gols. Como o projeto é uma integração de Front-End e Back-End, para editar o placar dos jogos da rodada você precisa estar logado no site.

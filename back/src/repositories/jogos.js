@@ -28,7 +28,7 @@ const obterJogosPorRodada = async (rodada = null) => {
 		values: [rodada],
 	});
 
-	return resultado.rows;
+	return resultado.rows[0];
 };
 
 const obterTodosOsJogos = async () => {
